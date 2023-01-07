@@ -2,6 +2,7 @@ package session
 
 import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/player"
 
+
 type SessionEvent interface {
 	isSessionEvent()
 }

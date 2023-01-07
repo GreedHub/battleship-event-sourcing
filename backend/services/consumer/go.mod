@@ -1,4 +1,4 @@
-module github.com/GreedHub/battleship-event-sourcing/backend/consumer
+module github.com/GreedHub/battleship-event-sourcing/backend/services/consumer
 
 go 1.19
 
@@ -8,7 +8,7 @@ require (
 )
 
 require (
-	github.com/confluentinc/confluent-kafka-go v1.9.2 // indirect
+	github.com/GreedHub/battleship-event-sourcing/backend/services/commons v0.0.0-20230107182747-cb5e3549f1c2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
