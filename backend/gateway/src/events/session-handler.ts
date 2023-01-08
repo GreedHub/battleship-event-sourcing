@@ -1,4 +1,4 @@
-import SessionEvents from "../consts/session.ts";
+import SessionEvents from "../consts/session-events.ts";
 
 const { CREATE_SESSION } = SessionEvents;
 
