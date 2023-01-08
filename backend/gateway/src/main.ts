@@ -1,3 +1,7 @@
 import wsServer from "./websockets/server.ts";
 
-wsServer();
+async function main() {
+  wsServer();
+}
+
+main();

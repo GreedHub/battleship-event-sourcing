@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std/http/mod.ts";
 import { handleConnected, handleError, handleMessage } from "./handlers.ts";
 
+import { GetWsPort } from "../helpers/env.ts";
+
+const PORT = GetWsPort();
+
 function logError(msg: string) {
   console.log(msg);
 }
@@ -20,7 +24,6 @@ async function reqHandler(req: Request) {
   return response;
 }
 
-export default function Connect() {
-  console.log("Waiting for client ...");
-  serve(reqHandler, { port: 8000 });
-}
+export default () => {
+  serve(reqHandler, { port: PORT });
+};
