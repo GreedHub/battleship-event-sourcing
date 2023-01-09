@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std/http/mod.ts";
+import { serve } from "../../deps.ts";
 import { handleConnected, handleError, handleMessage } from "./handlers.ts";
 
 import { GetWsPort } from "../helpers/env.ts";

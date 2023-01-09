@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name}}
+  labels:
+    app: {{ .Values.name}}
+spec:
+  replicas: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ .Values.name}}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name}}
+      annotations:
+        timestamp: "{{ .Values.timestamp }}"
+    spec:
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecret}}
+      containers:
+      - name: {{ .Values.name}}
+        image: {{ .Values.image.name}}
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.http.exposedPort}}
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 20
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.http.exposedPort}}
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 20
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "1"
+        env:
+        - name: "APP_NAME"
+          value: {{ .Values.name}}
+        - name: "HTTP_PORT"
+          value: {{ .Values.http.port}}
+        - name: "WS_PORT"
+          value: {{ .Values.webSockets.port}}
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        ports:
+        - name: {{ .Values.name}}-s
+          containerPort: {{ .Values.webSockets.exposedPort}}
+        - name: {{ .Values.name}}-h
+          containerPort: {{ .Values.http.exposedPort}}
+          
+---
+
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.name}}
+spec:
+  minAvailable: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ .Values.name}}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.name}}
+spec:
+  type: NodePort
+  selector:
+    app: {{ .Values.name}}
+  ports:
+  - protocol: TCP
+    name: {{ .Values.name}}-s
+    port: {{ .Values.webSockets.exposedPort}}
+    targetPort: {{ .Values.webSockets.exposedPort}}
+  - protocol: TCP
+    name: {{ .Values.name}}-h
+    port: {{ .Values.http.exposedPort}}
+    targetPort: {{ .Values.http.exposedPort}}
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Values.name}}
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`{{ .Values.webSockets.host}}`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: {{ .Values.name}}-s
+      port: {{ .Values.webSockets.exposedPort}}
+  tls:
+    certResolver: default
+    options: {}

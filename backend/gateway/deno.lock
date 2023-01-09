@@ -16,6 +16,7 @@
     "https://deno.land/std@0.171.0/collections/without_all.ts": "a89f5da0b5830defed4f59666e188df411d8fece35a5f6ca69be6ca71a95c185",
     "https://deno.land/std@0.171.0/datetime/to_imf.ts": "851d072a1c86c7ec34c753e61b1951ceda50c9da805b170a0ecaea3b024dd266",
     "https://deno.land/std@0.171.0/dotenv/mod.ts": "6e1dbc4737e3f62a5c1f3d2a26a0e5626fb168a198375bef574fedbe86a79f20",
+    "https://deno.land/std@0.171.0/fmt/colors.ts": "938c5d44d889fb82eff6c358bea8baa7e85950a16c9f6dae3ec3a7a729164471",
     "https://deno.land/std@0.171.0/http/_negotiation/common.ts": "14d1a52427ab258a4b7161cd80e1d8a207b7cc64b46e911780f57ead5f4323c6",
     "https://deno.land/std@0.171.0/http/_negotiation/encoding.ts": "ff747d107277c88cb7a6a62a08eeb8d56dad91564cbcccb30694d5dc126dcc53",
     "https://deno.land/std@0.171.0/http/_negotiation/language.ts": "7bcddd8db3330bdb7ce4fc00a213c5547c1968139864201efd67ef2d0d51887d",
@@ -26,6 +27,9 @@
     "https://deno.land/std@0.171.0/http/http_status.ts": "8a7bcfe3ac025199ad804075385e57f63d055b2aed539d943ccc277616d6f932",
     "https://deno.land/std@0.171.0/http/mod.ts": "b8039c604915f9b27fea8e251479ae30e4d15b1c01223b73fb0399e763fe2a5d",
     "https://deno.land/std@0.171.0/http/negotiation.ts": "32761c921afa7847cf767fe81c81785721abccc0db0fc51c7ec2a45868b4ee4a",
-    "https://deno.land/std@0.171.0/http/server.ts": "cbb17b594651215ba95c01a395700684e569c165a567e4e04bba327f41197433"
+    "https://deno.land/std@0.171.0/http/server.ts": "cbb17b594651215ba95c01a395700684e569c165a567e4e04bba327f41197433",
+    "https://deno.land/std@0.171.0/testing/_diff.ts": "1a3c044aedf77647d6cac86b798c6417603361b66b54c53331b312caeb447aea",
+    "https://deno.land/std@0.171.0/testing/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",
+    "https://deno.land/std@0.171.0/testing/asserts.ts": "984ab0bfb3faeed92ffaa3a6b06536c66811185328c5dd146257c702c41b01ab"
   }
 }
