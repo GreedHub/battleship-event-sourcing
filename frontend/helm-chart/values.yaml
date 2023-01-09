@@ -8,7 +8,7 @@ name: "battleship-f"
 namespace: "default"
 
 http:
-  exposedPort: "5000"
+  exposedPort: "80"
   host: "battleship.lglab.com.ar"
 
 image:
