@@ -92,9 +92,10 @@ jobs:
         with:
           version: 3.1.3
       - name: "Apply Kubeconfig"
-        uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: "Deploy with Helm"
         run: |
           cd ./backend/gateway/helm-chart && \
