@@ -107,7 +107,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`{{ .Values.webSockets.host}}`) && PathPrefix(`/`)
+  - match: Host(`{{ .Values.webSockets.host}}`)
     kind: Rule
     services:
     - name: {{ .Values.name}}
