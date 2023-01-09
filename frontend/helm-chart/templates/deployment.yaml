@@ -63,6 +63,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ .Values.name}}
+  namespace: {{ .Values.namespace}}
 spec:
   minAvailable: {{ .Values.replicaCount}}
   selector:
@@ -75,6 +76,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ .Values.name}}
+  namespace: {{ .Values.namespace}}
 spec:
   type: NodePort
   selector:
@@ -90,7 +92,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: {{ .Values.name}}
-  namespace: default
+  namespace: {{ .Values.namespace}}
 spec:
   entryPoints:
     - websecure
