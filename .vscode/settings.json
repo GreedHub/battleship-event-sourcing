@@ -3,9 +3,11 @@
     "experimentalWorkspaceModule": true
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "deno.enable": true,
+  "deno.enablePaths": ["../backend/**"]
 }

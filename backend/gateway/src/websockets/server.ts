@@ -9,7 +9,7 @@ function logError(msg: string) {
   console.log(msg);
 }
 
-async function reqHandler(req: Request) {
+function reqHandler(req: Request) {
   if (req.headers.get("upgrade") != "websocket") {
     return new Response(null, { status: 501 });
   }
