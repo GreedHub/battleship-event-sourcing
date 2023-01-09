@@ -5,6 +5,7 @@
 replicaCount: 1
 
 name: "battleship-gw"
+namespace: "default"
 
 webSockets:
   exposedPort: "8000"
@@ -16,7 +17,7 @@ http:
 
 
 image:
-  name: "ghcr.io/greedhub/battleship-frontend:latest"
+  name: "ghcr.io/greedhub/battleship-gateway:latest"
   pullSecret: github-registry-greedhub
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
