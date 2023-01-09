@@ -52,7 +52,7 @@ jobs:
         run: |
           cd ./frontend/helm-chart && \
           export TIMESTAMP=$(date +%s) && \
-          helm upgrade -i --force battleship-frontend -f values.yaml \
+          helm upgrade -i --force -n default battleship-frontend -f values.yaml \
           --set-string timestamp=$TIMESTAMP \
           ./
 
@@ -103,6 +103,6 @@ jobs:
         run: |
           cd ./backend/gateway/helm-chart && \
           export TIMESTAMP=$(date +%s) && \
-          helm upgrade -i --force battleship-gateway -f values.yaml \
+          helm upgrade -i --force -n default battleship-gateway -f values.yaml \
           --set-string timestamp=$TIMESTAMP \
           ./
