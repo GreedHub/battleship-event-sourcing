@@ -8,4 +8,4 @@ const app = new Application();
 
 app.use(HealthRouter.routes());
 
-await app.listen(`127.0.0.1:5000`);
+await app.listen(`localhost:5000`);
