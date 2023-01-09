@@ -1,7 +1,11 @@
+import { Application } from "../deps.ts";
 import wsServer from "./websockets/server.ts";
+import HealthRouter from "./routes/health.ts";
 
-async function main() {
-  wsServer();
-}
+wsServer();
 
-main();
+const app = new Application();
+
+app.use(HealthRouter.routes());
+
+await app.listen(`127.0.0.1:5000`);
