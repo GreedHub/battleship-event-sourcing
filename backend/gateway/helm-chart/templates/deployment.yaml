@@ -110,7 +110,7 @@ spec:
   - match: Host(`{{ .Values.webSockets.host}}`) && PathPrefix(`/`)
     kind: Rule
     services:
-    - name: {{ .Values.name}}-s
+    - name: {{ .Values.name}}
       port: {{ .Values.webSockets.exposedPort}}
   tls:
     secretName: {{ .Values.ingress.tls.SecretName}}
