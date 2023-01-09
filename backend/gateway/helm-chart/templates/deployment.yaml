@@ -110,5 +110,4 @@ spec:
     - name: {{ .Values.name}}-s
       port: {{ .Values.webSockets.exposedPort}}
   tls:
-    certResolver: default
-    options: {}
+    secretName: {{ .Values.ingress.tls.SecretName}}
