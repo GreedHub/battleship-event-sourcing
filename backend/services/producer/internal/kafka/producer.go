@@ -28,3 +28,7 @@ func Produce(queue string, event interface{}) error {
 
 	return nil
 }
+
+func Read() (player  []Production, session []Production, ship []Production){
+	return playerEvents,sessionEvents, shipEvents
+}

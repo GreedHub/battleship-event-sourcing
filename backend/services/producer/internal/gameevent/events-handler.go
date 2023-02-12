@@ -2,6 +2,7 @@ package gameevent
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"time"
 
@@ -10,7 +11,13 @@ import (
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/session"
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/producer/internal/kafka"
+	"github.com/gin-gonic/gin"
 )
+
+type EventRequest struct{
+	EventType 	string		`json:"type"`
+	Payload		map[string]interface{}	`json:"payload"`
+}
 
 type EventProduction struct{
 	Id			eventID				`json:"id"`
@@ -33,35 +40,125 @@ func newEventProduction(sessionId string, event interface{}) *EventProduction{
 	return production
 }
 
+func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{}, err error){
+	var ev EventRequest
+	c.BindJSON(&ev)
+	switch  ev.EventType{
+	case "CreateSession":
+		if ev.Payload["owner_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent CreateSession: Parameter 'owner_id' missing")
+		}
+		status, body, err = onCreateSessionEvent(&CreateSession{
+			OwnerID: int(ev.Payload["owner_id"].(float64)),
+		})
 
-func HandleGameEvent (gameEvent interface{})  (status int, body map[string]interface{}, err error){
-	switch  e:= gameEvent.(type){
-	case *CreateSession:
-		status, body, err = onCreateSessionEvent(e)
+	case "DeleteSession":
+		if ev.Payload["owner_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent DeleteSession: Parameter 'owner_id' missing")
+		}
+		status, body, err = onDeleteSessionEvent(&DeleteSession{
+			OwnerID: ev.Payload["owner_id"].(int),
+		})
 
-	case *DeleteSession:
-		status, body, err = onDeleteSessionEvent(e)
+	case "JoinSession":
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent JoinSession: Parameter 'session_id' missing")
+		}
+		
+		if ev.Payload["guest_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent JoinSession: Parameter 'guest_id' missing")
+		}
 
-	case *JoinSession:
-		status, body, err = onJoinSessionEvent(e)
+		status, body, err = onJoinSessionEvent(&JoinSession{
+			GuestID: ev.Payload["guest_id"].(int),
+			SessionID: ev.Payload["session_id"].(string),
+		})
 
-	case *ExitSession:
-		status, body, err = onExitSessionEvent(e)
+	case "ExitSession":
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent ExitSession: Parameter 'session_id' missing")
+		}
+		if ev.Payload["guest_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent ExitSession: Parameter 'guest_id' missing")
+		}
+		status, body, err = onExitSessionEvent(&ExitSession{
+			GuestID: ev.Payload["guest_id"].(int),
+			SessionID: ev.Payload["session_id"].(string),
+		})
 
-	case *StartMatch:
-		status, body, err = onStartMatchEvent(e)
+	case "StartMatch":
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent StartMatch: Parameter 'session_id' missing")
+		}
+		
+		if ev.Payload["owner_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent StartMatch: Parameter 'owner_id' missing")
+		}
 
-	case *PlaceShip:
-		status, body, err = onPlaceShipEvent(e)
+		status, body, err = onStartMatchEvent(&StartMatch{
+			OwnerID: ev.Payload["owner_id"].(int),
+			SessionID: ev.Payload["session_id"].(string),
+		})
 
-	case *PlayerReady:
-		status, body, err = onPlayerReadyEvent(e)
+	case "PlaceShip":
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlaceShip: Parameter 'session_id' missing")
+		}
+		
+		if ev.Payload["player_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlaceShip: Parameter 'player_id' missing")
+		}
 
-	case *PlayerShoot:
-		status, body, err = onPlayerShootEvent(e)
+		if ev.Payload["ship_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlaceShip: Parameter 'ship_id' missing")
+		}
+
+		if ev.Payload["position"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlaceShip: Parameter 'position' missing")
+		}
+
+		status, body, err = onPlaceShipEvent(&PlaceShip{
+			PlayerID: ev.Payload["player_id"].(int),
+			ShipID: ev.Payload["ship_id"].(int),
+			SessionID: ev.Payload["session_id"].(string),
+			Position: ev.Payload["position"].(utils.Position),
+		})
+
+	case "PlayerReady":
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlaceShip: Parameter 'session_id' missing")
+		}
+		
+		if ev.Payload["player_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlaceShip: Parameter 'player_id' missing")
+		}
+
+		status, body, err = onPlayerReadyEvent(&PlayerReady{
+			PlayerID: ev.Payload["player_id"].(int),
+			SessionID: ev.Payload["session_id"].(string),
+		})
+
+	case "PlayerShoot":
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlayerShoot: Parameter 'session_id' missing")
+		}
+		
+		if ev.Payload["player_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlayerShoot: Parameter 'player_id' missing")
+		}
+		
+		if ev.Payload["coords"] == nil{
+			return 400,nil,errors.New("Error invoking envent PlayerShoot: Parameter 'coords' missing")
+		}
+
+		status, body, err = onPlayerShootEvent(&PlayerShoot{
+			PlayerID: ev.Payload["player_id"].(int),
+			SessionID: ev.Payload["session_id"].(string),
+			Coords: ev.Payload["coords"].(utils.PosXY),
+		})
 
 	default:
-		return 400, nil, errors.New("Invalid event") 
+		return 400, nil, errors.New(fmt.Sprintf("Invalid event: %s",ev.EventType)) 
 	}
 
 	return status, body, err
@@ -71,6 +168,7 @@ func onCreateSessionEvent(e *CreateSession) (status int, body map[string]interfa
 	status = 201
 
 	sessionId  := session.CreateSessionId()
+	body = make(map[string]interface{})
 	body["session_id"] = sessionId
 
 	event := &session.SessionCreated{

@@ -9,4 +9,5 @@ type ApiResponse struct{
 const (
 	INTERNAL_SERVER_ERROR = "internal_server_error"
 	OK = "ok"
+	BAD_REQUEST = "bad_request"
 )
