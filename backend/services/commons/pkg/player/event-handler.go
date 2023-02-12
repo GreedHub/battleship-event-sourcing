@@ -19,6 +19,6 @@ func (p *Player) On(event PlayerEvent, new bool) {
 }
 
 func (p *Player) onPlayerCreated(e *PlayerCreated) {
-	p.id = e.ID
+	p.id = e.PlayerID
 	p.name = e.Name
 }

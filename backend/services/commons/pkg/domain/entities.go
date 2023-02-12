@@ -1,7 +1,7 @@
 package domain
 
 const (
-	PLAYER = "PLAYER"
 	SHIP = "SHIP"
+	PLAYER = "PLAYER"
 	SESSION = "SESSION"
 )

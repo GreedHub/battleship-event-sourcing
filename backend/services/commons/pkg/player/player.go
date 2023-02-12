@@ -17,9 +17,13 @@ func New(id int, name string) *Player {
 	p := &Player{}
 
 	p.raise(&PlayerCreated{
-		ID:   id,
+		PlayerID:   id,
 		Name: name,
 	})
 
 	return p
+}
+
+func (p *Player) GetName() string{
+	return p.name
 }

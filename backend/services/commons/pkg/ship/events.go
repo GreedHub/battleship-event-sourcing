@@ -1,6 +1,6 @@
 package ship
 
-import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/utils"
+import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 
 // ShipEvent is a domain event marker.
 type ShipEvent interface {

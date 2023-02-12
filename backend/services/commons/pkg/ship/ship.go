@@ -1,9 +1,9 @@
 package ship
 
-import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/utils"
+import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 
 type Ship struct {
-	id       int
+	id       ShipID
 	name     string
 	size     int
 	position utils.Position
@@ -12,6 +12,8 @@ type Ship struct {
 	changes []ShipEvent
 	version int
 }
+
+type ShipID = int
 
 func New(id int, size int) *Ship {
 	s := &Ship{}

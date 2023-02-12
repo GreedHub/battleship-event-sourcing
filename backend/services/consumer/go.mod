@@ -8,7 +8,6 @@ require (
 )
 
 require (
-	github.com/GreedHub/battleship-event-sourcing/backend/services/commons v0.0.0-20230107182747-cb5e3549f1c2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect

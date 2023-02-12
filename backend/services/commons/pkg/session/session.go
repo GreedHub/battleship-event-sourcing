@@ -4,13 +4,13 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/player"
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/utils"
+	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/player"
+	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 )
 
 type Session struct {
 	id           SessionID
-	owner        player.PlayerID
+	ownerID        player.PlayerID
 	guest        player.PlayerID
 	status       string
 	playersReady int
@@ -21,17 +21,18 @@ type Session struct {
 
 type SessionID = string
 
-func New(owner player.PlayerID) *Session {
+func New(ownerID player.PlayerID, sessionID SessionID) *Session {
 	s := &Session{}
 
 	s.raise(&SessionCreated{
-		Owner: owner,
+		OwnerID: ownerID,
+		SessionID: sessionID,
 	})
 
 	return s
 }
 
-func (s *Session) createSessionId() SessionID {
+func CreateSessionId() SessionID {
 	DEFAULT_SESSION_ID_LENGTH := 4
 
 	sessionIdLengthEnv := os.Getenv("SESSION_ID_LENGTH")
@@ -48,10 +49,18 @@ func (s *Session) createSessionId() SessionID {
 	return utils.GetRandomCapitalizedString(sessionIdLength)
 }
 
+func (s *Session) GetOwnerID() player.PlayerID {
+	return s.ownerID
+}
+
 func (s *Session) Events() []SessionEvent {
 	return s.changes
 }
 
 func (s *Session) Version() int {
 	return s.version
+}
+
+func (s *Session) BothPlayersReady() bool {
+	return s.playersReady == 2
 }
