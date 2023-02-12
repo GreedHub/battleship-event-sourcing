@@ -3,7 +3,6 @@ package gameevent
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"time"
 
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/domain"
@@ -29,11 +28,11 @@ type EventProduction struct{
 
 type eventID = string
 
-func newEventProduction(sessionId string, event interface{}) *EventProduction{
+func newEventProduction(eventType string, sessionId string, event interface{}) *EventProduction{
 	production := &EventProduction{
 			Id: utils.GetRandomString(50), // Fixme: this can produce duplicates
 			Timestamp: time.Now(),
-			EventType: reflect.TypeOf(event).Name(),
+			EventType: eventType,
 			SessionId: sessionId,
 			Payload: event,
 		}
@@ -181,7 +180,7 @@ func onCreateSessionEvent(e *CreateSession) (status int, body map[string]interfa
 		SessionID: sessionId,
 	}
 	
-	production := newEventProduction(sessionId,event)
+	production := newEventProduction("SessionCreated",sessionId,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -197,7 +196,7 @@ func onDeleteSessionEvent(e *DeleteSession)(status int, body map[string]interfac
 
 	event := &session.SessionDeleted{}
 	
-	production := newEventProduction(e.SessionID,event)
+	production := newEventProduction("SessionDeleted",e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -211,9 +210,11 @@ func onDeleteSessionEvent(e *DeleteSession)(status int, body map[string]interfac
 func onJoinSessionEvent(e *JoinSession)(status int, body map[string]interface{}, err error){
 	status = 200
 
-	event := &session.SessionDeleted{}
+	event := &session.GuestConnected{
+		GuestID: e.GuestID,
+	}
 	
-	production := newEventProduction(e.SessionID,event)
+	production := newEventProduction("GuestConnected",e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -229,7 +230,7 @@ func onExitSessionEvent(e *ExitSession)(status int, body map[string]interface{},
 
 	event := &session.GuestDisconnected{}
 	
-	production := newEventProduction(e.SessionID,event)
+	production := newEventProduction("GuestDisconnected",e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -245,7 +246,7 @@ func onStartMatchEvent(e *StartMatch)(status int, body map[string]interface{}, e
 
 	event := &session.MatchStarted{}
 	
-	production := newEventProduction(e.SessionID,event)
+	production := newEventProduction("MatchStarted",e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -264,7 +265,7 @@ func onPlaceShipEvent(e *PlaceShip)(status int, body map[string]interface{}, err
 		Position: e.Position,
 	}
 	
-	production := newEventProduction(e.SessionID,event)
+	production := newEventProduction("ShipPlaced",e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -279,18 +280,19 @@ func onPlayerReadyEvent(e *PlayerReady)(status int, body map[string]interface{},
 	status = 202
 
 	var event interface{}
+	var production *EventProduction
 
 	s := session.New(e.PlayerID,session.CreateSessionId()) // FIXME: change this for a session validation
 
 	if e.PlayerID == s.GetOwnerID(){
 		event = &session.OwnerReady{}
+		production = newEventProduction("OwnerReady",e.SessionID,event)
 	} else {
 		event = &session.GuestReady{}
+		production = newEventProduction("GuestReady",e.SessionID,event)
 	}
 
 	// FIXME: Validate game started
-
-	production := newEventProduction(e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 
@@ -311,7 +313,7 @@ func onPlayerShootEvent(e *PlayerShoot)(status int, body map[string]interface{},
 
 	// FIXME: Validate game finished
 	
-	production := newEventProduction(e.SessionID,event)
+	production := newEventProduction("PlayerShoot",e.SessionID,event)
 
 	err = kafka.Produce(domain.SESSION,production)
 

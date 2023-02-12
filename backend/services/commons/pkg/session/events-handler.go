@@ -41,7 +41,7 @@ func (s *Session) onSessionCreated(e *SessionCreated) {
 }
 
 func (s *Session) onGuestConnected(e *GuestConnected) {
-	s.guest = e.Guest
+	s.guestID = e.GuestID
 	s.status = WAITING_TO_START
 }
 

@@ -38,7 +38,7 @@ type SessionDeleted struct {}
 
 // GuestConnected event.
 type GuestConnected struct {
-	Guest player.PlayerID `json:"guest"`
+	GuestID player.PlayerID `json:"guest"`
 }
 
 // GuestDisconnected event.

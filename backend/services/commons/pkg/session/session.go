@@ -11,7 +11,7 @@ import (
 type Session struct {
 	id           SessionID
 	ownerID        player.PlayerID
-	guest        player.PlayerID
+	guestID        player.PlayerID
 	status       string
 	playersReady int
 
