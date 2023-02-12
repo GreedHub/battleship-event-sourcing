@@ -75,7 +75,7 @@ func onCreateSessionEvent(e *CreateSession) (status int, body map[string]interfa
 
 	event := &session.SessionCreated{
 		OwnerID: e.OwnerID,
-		SessionID: e.SessionID,
+		SessionID: sessionId,
 	}
 	
 	production := newEventProduction(sessionId,event)

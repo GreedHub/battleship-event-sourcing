@@ -22,7 +22,6 @@ func (e PlayerShoot)	isGameEvent() {}
 // CreateSession event.
 type CreateSession struct {
 	OwnerID player.PlayerID `json:"owner_id"`
-	SessionID  string `json:"session_id"`
 }
 
 // DeleteSession event.
