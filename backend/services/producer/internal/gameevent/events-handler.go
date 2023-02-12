@@ -56,8 +56,13 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		if ev.Payload["owner_id"] == nil{
 			return 400,nil,errors.New("Error invoking envent DeleteSession: Parameter 'owner_id' missing")
 		}
+		if ev.Payload["session_id"] == nil{
+			return 400,nil,errors.New("Error invoking envent JoinSession: Parameter 'session_id' missing")
+		}
+
 		status, body, err = onDeleteSessionEvent(&DeleteSession{
-			OwnerID: ev.Payload["owner_id"].(int),
+			OwnerID: int(ev.Payload["owner_id"].(float64)),
+			SessionID: ev.Payload["session_id"].(string),
 		})
 
 	case "JoinSession":
@@ -70,7 +75,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		}
 
 		status, body, err = onJoinSessionEvent(&JoinSession{
-			GuestID: ev.Payload["guest_id"].(int),
+			GuestID: int(ev.Payload["guest_id"].(float64)),
 			SessionID: ev.Payload["session_id"].(string),
 		})
 
@@ -82,7 +87,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 			return 400,nil,errors.New("Error invoking envent ExitSession: Parameter 'guest_id' missing")
 		}
 		status, body, err = onExitSessionEvent(&ExitSession{
-			GuestID: ev.Payload["guest_id"].(int),
+			GuestID: int(ev.Payload["guest_id"].(float64)),
 			SessionID: ev.Payload["session_id"].(string),
 		})
 
@@ -96,7 +101,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		}
 
 		status, body, err = onStartMatchEvent(&StartMatch{
-			OwnerID: ev.Payload["owner_id"].(int),
+			OwnerID: int(ev.Payload["owner_id"].(float64)),
 			SessionID: ev.Payload["session_id"].(string),
 		})
 
@@ -118,8 +123,8 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		}
 
 		status, body, err = onPlaceShipEvent(&PlaceShip{
-			PlayerID: ev.Payload["player_id"].(int),
-			ShipID: ev.Payload["ship_id"].(int),
+			PlayerID: int(ev.Payload["player_id"].(float64)),
+			ShipID: int(ev.Payload["ship_id"].(float64)),
 			SessionID: ev.Payload["session_id"].(string),
 			Position: ev.Payload["position"].(utils.Position),
 		})
@@ -134,7 +139,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		}
 
 		status, body, err = onPlayerReadyEvent(&PlayerReady{
-			PlayerID: ev.Payload["player_id"].(int),
+			PlayerID: int(ev.Payload["player_id"].(float64)),
 			SessionID: ev.Payload["session_id"].(string),
 		})
 
@@ -152,7 +157,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		}
 
 		status, body, err = onPlayerShootEvent(&PlayerShoot{
-			PlayerID: ev.Payload["player_id"].(int),
+			PlayerID: int(ev.Payload["player_id"].(float64)),
 			SessionID: ev.Payload["session_id"].(string),
 			Coords: ev.Payload["coords"].(utils.PosXY),
 		})
