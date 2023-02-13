@@ -1,8 +1,12 @@
 package utils
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 func getRandomString(symbols string, length int) string {
+	rand.Seed(time.Now().UnixNano())
 	b := make([]byte, length)
 	for i := range b {
 		b[i] = symbols[rand.Intn(len(symbols))]

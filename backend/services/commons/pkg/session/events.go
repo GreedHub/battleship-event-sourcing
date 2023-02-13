@@ -2,8 +2,6 @@ package session
 
 import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/player"
 
-
-
 type SessionEvent interface {
 	isSessionEvent()
 }
@@ -27,15 +25,6 @@ type SessionCreated struct {
 // SessionDeleted event.
 type SessionDeleted struct {}
 
-/* {
-	"id": "nonse",
-	"timestamp": "2022-2-2T03:03:03Z-3:00",
-	"type":"SessionCreated",
-	"session_id": "8241yhbrkj",
-	"owner_id": "kjdlvblh",
-} 
-*/
-
 // GuestConnected event.
 type GuestConnected struct {
 	GuestID player.PlayerID `json:"guest"`
@@ -44,36 +33,11 @@ type GuestConnected struct {
 // GuestDisconnected event.
 type GuestDisconnected struct {}
 
-/* {
-	"id": "nonse",
-	"timestamp": "2022-2-2T03:03:03Z-3:00",
-	"type":"GuestConnected",
-	"session_id": "8241yhbrkj",
-	"guest_id": "kjdlvbl2h",
-} 
-*/
-
 // MatchStarted event.
 type MatchStarted struct{}
 
-/* {
-	"id": "nonse",
-	"timestamp": "2022-2-2T03:03:03Z-3:00",
-	"type":"MatchStarted",
-	"session_id": "8241yhbrkj",
-} 
-*/
-
 // GuestReady event.
 type GuestReady struct{}
-
-/* {
-	"id": "nonse",
-	"timestamp": "2022-2-2T03:03:03Z-3:00",
-	"type":"GuestReady",
-	"session_id": "8241yhbrkj",
-} 
-*/
 
 // OwnerReady event.
 type OwnerReady struct{}
