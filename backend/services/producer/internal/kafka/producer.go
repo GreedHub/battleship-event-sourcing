@@ -4,7 +4,6 @@ import (
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/domain"
 )
 
-
 var (
 	playerEvents  []Production
 	sessionEvents []Production
@@ -29,6 +28,6 @@ func Produce(queue string, event interface{}) error {
 	return nil
 }
 
-func Read() (player  []Production, session []Production, ship []Production){
-	return playerEvents,sessionEvents, shipEvents
+func Read() (player []Production, session []Production, ship []Production) {
+	return playerEvents, sessionEvents, shipEvents
 }

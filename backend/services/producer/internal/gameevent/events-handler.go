@@ -13,49 +13,49 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type EventRequest struct{
-	EventType 	string					`json:"type"`
-	Payload		map[string]interface{}	`json:"payload"`
+type EventRequest struct {
+	EventType string                 `json:"type"`
+	Payload   map[string]interface{} `json:"payload"`
 }
 
-type EventProduction struct{
-	Id			utils.ID	`json:"id"`
-	Timestamp	time.Time	`json:"timestamp"`
-	EventType	string		`json:"type"`
-	EntityID	utils.ID	`json:"entity_id"`
-	Payload		interface{}	`json:"payload"`
+type EventProduction struct {
+	Id        utils.ID    `json:"id"`
+	Timestamp time.Time   `json:"timestamp"`
+	EventType string      `json:"type"`
+	EntityID  utils.ID    `json:"entity_id"`
+	Payload   interface{} `json:"payload"`
 }
 
-func newEventProduction(eventType string, entityID utils.ID, event interface{}) *EventProduction{
+func newEventProduction(eventType string, entityID utils.ID, event interface{}) *EventProduction {
 	production := &EventProduction{
-			Id: utils.GetRandomString(50), // Fixme: this can produce duplicates
-			Timestamp: time.Now(),
-			EventType: eventType,
-			EntityID: entityID,
-			Payload: event,
-		}
+		Id:        utils.GetRandomString(50), // Fixme: this can produce duplicates
+		Timestamp: time.Now(),
+		EventType: eventType,
+		EntityID:  entityID,
+		Payload:   event,
+	}
 	return production
 }
 
-func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{}, err error){
+func HandleGameEvent(c *gin.Context) (status int, body map[string]interface{}, err error) {
 	var ev EventRequest
 	c.BindJSON(&ev)
-	switch  ev.EventType{
+	switch ev.EventType {
 	case CREATE_PLAYER_EVENT:
 		e := &CreatePlayer{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
 		status, body, err = onCreatePlayerEvent(e)
-		
+
 	case CREATE_SESSION_EVENT:
 		e := &CreateSession{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
@@ -66,7 +66,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &DeleteSession{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
@@ -76,7 +76,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &JoinSession{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
@@ -86,7 +86,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &ExitSession{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
@@ -96,7 +96,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &StartMatch{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
@@ -106,7 +106,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &PlaceShip{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
@@ -116,14 +116,14 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &PlayerReady{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
 		status, body, err = onPlayerReadyEvent(e)
 
 		status, body, err = onPlayerReadyEvent(&PlayerReady{
-			PlayerID: ev.Payload["player_id"].(string),
+			PlayerID:  ev.Payload["player_id"].(string),
 			SessionID: ev.Payload["session_id"].(string),
 		})
 
@@ -131,195 +131,195 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		e := &PlayerShoot{}
 		err := e.unmarshal(ev.Payload)
 
-		if err != nil{
+		if err != nil {
 			return 400, nil, err
 		}
 
 		status, body, err = onPlayerShootEvent(e)
 
 	default:
-		return 400, nil, errors.New(fmt.Sprintf(`Invalid event "%s"`,ev.EventType)) 
+		return 400, nil, errors.New(fmt.Sprintf(`Invalid event "%s"`, ev.EventType))
 	}
 
 	return status, body, err
 }
 
-func onCreatePlayerEvent(e *CreatePlayer) (status int, body map[string]interface{}, err error){
+func onCreatePlayerEvent(e *CreatePlayer) (status int, body map[string]interface{}, err error) {
 	status = 201
 
-	playerID  := player.CreatePlayerId()
+	playerID := player.CreatePlayerId()
 	body = make(map[string]interface{})
 	body["player_id"] = playerID
 
 	event := &player.PlayerCreated{
-		Name: e.Name,
+		Name:     e.Name,
 		PlayerID: playerID,
 	}
-	
-	production := newEventProduction("PlayerCreated",playerID,event)
 
-	err = kafka.Produce(domain.PLAYER,production)
+	production := newEventProduction("PlayerCreated", playerID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.PLAYER, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onCreateSessionEvent(e *CreateSession) (status int, body map[string]interface{}, err error){
+func onCreateSessionEvent(e *CreateSession) (status int, body map[string]interface{}, err error) {
 	status = 201
 
-	sessionId  := session.CreateSessionId()
+	sessionId := session.CreateSessionId()
 	body = make(map[string]interface{})
 	body["session_id"] = sessionId
 
 	event := &session.SessionCreated{
-		OwnerID: e.OwnerID,
+		OwnerID:   e.OwnerID,
 		SessionID: sessionId,
 	}
-	
-	production := newEventProduction("SessionCreated",sessionId,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("SessionCreated", sessionId, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onDeleteSessionEvent(e *DeleteSession)(status int, body map[string]interface{}, err error){
+func onDeleteSessionEvent(e *DeleteSession) (status int, body map[string]interface{}, err error) {
 	status = 202
 
 	event := &session.SessionDeleted{}
-	
-	production := newEventProduction("SessionDeleted",e.SessionID,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("SessionDeleted", e.SessionID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onJoinSessionEvent(e *JoinSession)(status int, body map[string]interface{}, err error){
+func onJoinSessionEvent(e *JoinSession) (status int, body map[string]interface{}, err error) {
 	status = 200
 
 	event := &session.GuestConnected{
 		GuestID: e.GuestID,
 	}
-	
-	production := newEventProduction("GuestConnected",e.SessionID,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("GuestConnected", e.SessionID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onExitSessionEvent(e *ExitSession)(status int, body map[string]interface{}, err error){
+func onExitSessionEvent(e *ExitSession) (status int, body map[string]interface{}, err error) {
 	status = 202
 
 	event := &session.GuestDisconnected{}
-	
-	production := newEventProduction("GuestDisconnected",e.SessionID,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("GuestDisconnected", e.SessionID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onStartMatchEvent(e *StartMatch)(status int, body map[string]interface{}, err error){
+func onStartMatchEvent(e *StartMatch) (status int, body map[string]interface{}, err error) {
 	status = 202
 
 	event := &session.MatchStarted{}
-	
-	production := newEventProduction("MatchStarted",e.SessionID,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("MatchStarted", e.SessionID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onPlaceShipEvent(e *PlaceShip)(status int, body map[string]interface{}, err error){
+func onPlaceShipEvent(e *PlaceShip) (status int, body map[string]interface{}, err error) {
 	status = 202
 
 	event := &player.ShipPlaced{
 		PlayerID: e.PlayerID,
-		ShipID: e.ShipID,
+		ShipID:   e.ShipID,
 		Position: e.Position,
 	}
-	
-	production := newEventProduction("ShipPlaced",e.SessionID,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("ShipPlaced", e.SessionID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onPlayerReadyEvent(e *PlayerReady)(status int, body map[string]interface{}, err error){
+func onPlayerReadyEvent(e *PlayerReady) (status int, body map[string]interface{}, err error) {
 	status = 202
 
 	var event interface{}
 	var production *EventProduction
 
-	s := session.New(e.PlayerID,session.CreateSessionId()) // FIXME: change this for a session validation
+	s := session.New(e.PlayerID, session.CreateSessionId()) // FIXME: change this for a session validation
 
-	if e.PlayerID == s.GetOwnerID(){
+	if e.PlayerID == s.GetOwnerID() {
 		event = &session.OwnerReady{}
-		production = newEventProduction("OwnerReady",e.SessionID,event)
+		production = newEventProduction("OwnerReady", e.SessionID, event)
 	} else {
 		event = &session.GuestReady{}
-		production = newEventProduction("GuestReady",e.SessionID,event)
+		production = newEventProduction("GuestReady", e.SessionID, event)
 	}
 
 	// FIXME: Validate game started
 
-	err = kafka.Produce(domain.SESSION,production)
+	err = kafka.Produce(domain.SESSION, production)
 
-	if err != nil { 
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }
 
-func onPlayerShootEvent(e *PlayerShoot)(status int, body map[string]interface{}, err error){
+func onPlayerShootEvent(e *PlayerShoot) (status int, body map[string]interface{}, err error) {
 	status = 202
 
 	event := &player.PlayerShoot{
 		PlayerID: e.PlayerID,
-		Coords: e.Coords,
+		Coords:   e.Coords,
 	}
 
 	// FIXME: Validate game finished
-	
-	production := newEventProduction("PlayerShoot",e.SessionID,event)
 
-	err = kafka.Produce(domain.SESSION,production)
+	production := newEventProduction("PlayerShoot", e.SessionID, event)
 
-	if err != nil { 
+	err = kafka.Produce(domain.SESSION, production)
+
+	if err != nil {
 		return 500, nil, err
 	}
-	
+
 	return status, body, err
 }

@@ -21,17 +21,17 @@ func SetupRouter() *gin.Engine {
 
 	// Read store
 	r.GET("/read", func(c *gin.Context) {
-		playerEvents,sessionEvents, shipEvents := kafka.Read()
+		playerEvents, sessionEvents, shipEvents := kafka.Read()
 		data := make(map[string]interface{})
 		data["player"] = playerEvents
 		data["session"] = sessionEvents
 		data["ship"] = shipEvents
 
 		c.JSON(http.StatusOK, &domain.ApiResponse{
-				Status: uint32(http.StatusOK),
-				Message: domain.OK,
-				Data: data,
-			})
+			Status:  uint32(http.StatusOK),
+			Message: domain.OK,
+			Data:    data,
+		})
 	})
 
 	// Get user value
@@ -39,9 +39,9 @@ func SetupRouter() *gin.Engine {
 
 		status, body, err2 := gameevent.HandleGameEvent(c)
 
-		if err2 != nil{
+		if err2 != nil {
 			c.JSON(status, &domain.ApiResponse{
-				Status: uint32(status),
+				Status:  uint32(status),
 				Message: err2.Error(),
 			})
 
@@ -49,9 +49,9 @@ func SetupRouter() *gin.Engine {
 		}
 
 		c.JSON(status, &domain.ApiResponse{
-				Status: 200,
-				Data: body,
-			 })
+			Status: 200,
+			Data:   body,
+		})
 
 	})
 
