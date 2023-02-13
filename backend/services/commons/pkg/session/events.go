@@ -1,6 +1,6 @@
 package session
 
-import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/player"
+import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 
 type SessionEvent interface {
 	isSessionEvent()
@@ -18,8 +18,8 @@ func (e OwnerWon) isSessionEvent()       {}
 
 // SessionCreated event.
 type SessionCreated struct {
-	OwnerID player.PlayerID `json:"owner"`
-	SessionID  string `json:"session_id"`
+	OwnerID utils.ID `json:"owner"`
+	SessionID  utils.ID `json:"session_id"`
 }
 
 // SessionDeleted event.
@@ -27,7 +27,7 @@ type SessionDeleted struct {}
 
 // GuestConnected event.
 type GuestConnected struct {
-	GuestID player.PlayerID `json:"guest"`
+	GuestID utils.ID `json:"guest"`
 }
 
 // GuestDisconnected event.

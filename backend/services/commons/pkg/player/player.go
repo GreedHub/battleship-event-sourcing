@@ -11,16 +11,14 @@ import (
 
  */
 type Player struct {
-	id   PlayerID
+	id   utils.ID
 	name string
 
 	changes []PlayerEvent
 	version int
 }
 
-type PlayerID = string
-
-func New(id PlayerID, name string) *Player {
+func New(id utils.ID, name string) *Player {
 	p := &Player{}
 
 	p.raise(&PlayerCreated{
@@ -31,7 +29,7 @@ func New(id PlayerID, name string) *Player {
 	return p
 }
 
-func CreatePlayerId() PlayerID {
+func CreatePlayerId() utils.ID {
 	DEFAULT_PLAYER_ID_LENGTH := 50
 
 	playerIdLengthEnv := os.Getenv("Player_ID_LENGTH")

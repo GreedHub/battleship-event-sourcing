@@ -4,14 +4,13 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/player"
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 )
 
 type Session struct {
-	id           SessionID
-	ownerID        player.PlayerID
-	guestID        player.PlayerID
+	id           utils.ID
+	ownerID        utils.ID
+	guestID        utils.ID
 	status       string
 	playersReady int
 
@@ -19,9 +18,7 @@ type Session struct {
 	version int
 }
 
-type SessionID = string
-
-func New(ownerID player.PlayerID, sessionID SessionID) *Session {
+func New(ownerID utils.ID, sessionID utils.ID) *Session {
 	s := &Session{}
 
 	s.raise(&SessionCreated{
@@ -32,7 +29,7 @@ func New(ownerID player.PlayerID, sessionID SessionID) *Session {
 	return s
 }
 
-func CreateSessionId() SessionID {
+func CreateSessionId() utils.ID {
 	DEFAULT_SESSION_ID_LENGTH := 4
 
 	sessionIdLengthEnv := os.Getenv("SESSION_ID_LENGTH")
@@ -49,7 +46,7 @@ func CreateSessionId() SessionID {
 	return utils.GetRandomCapitalizedString(sessionIdLength)
 }
 
-func (s *Session) GetOwnerID() player.PlayerID {
+func (s *Session) GetOwnerID() utils.ID {
 	return s.ownerID
 }
 

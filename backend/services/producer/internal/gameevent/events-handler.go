@@ -19,14 +19,12 @@ type EventRequest struct{
 }
 
 type EventProduction struct{
-	Id			eventID				`json:"id"`
-	Timestamp	time.Time			`json:"timestamp"`
-	EventType	string				`json:"type"`
-	EntityID	utils.ID			`json:"entity_id"`
-	Payload		interface{}			`json:"payload"`
+	Id			utils.ID	`json:"id"`
+	Timestamp	time.Time	`json:"timestamp"`
+	EventType	string		`json:"type"`
+	EntityID	utils.ID	`json:"entity_id"`
+	Payload		interface{}	`json:"payload"`
 }
-
-type eventID = string
 
 func newEventProduction(eventType string, entityID utils.ID, event interface{}) *EventProduction{
 	production := &EventProduction{

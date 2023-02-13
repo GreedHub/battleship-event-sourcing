@@ -1,7 +1,6 @@
 package player
 
 import (
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/ship"
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 )
 
@@ -17,19 +16,19 @@ func (e PlayerShoot) isPlayerEvent() {}
 
 // PlayerCreated event.
 type PlayerCreated struct {
-	PlayerID   	PlayerID	`json:"id"`
+	PlayerID   	utils.ID	`json:"id"`
 	Name 		string		`json:"name"`
 }
 
 // ShipPlaced event.
 type ShipPlaced struct {
-	PlayerID   PlayerID			`json:"player_id"`
-	ShipID	   ship.ShipID		`json:"ship_id"`
+	PlayerID   utils.ID			`json:"player_id"`
+	ShipID	   utils.ID		`json:"ship_id"`
 	Position   utils.Position	`json:"position"`
 }
 
 // PlayerShoot event.
 type PlayerShoot struct {
-	PlayerID	PlayerID	`json:"player_id"`
+	PlayerID	utils.ID	`json:"player_id"`
 	Coords		utils.PosXY	`json:"coords"`
 }

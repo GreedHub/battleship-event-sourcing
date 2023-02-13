@@ -3,9 +3,6 @@ package gameevent
 import (
 	"errors"
 
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/player"
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/session"
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/ship"
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 )
 
@@ -53,7 +50,7 @@ func (e *CreatePlayer) unmarshal(payload map[string]interface{}) error{
 
 // CreateSession event.
 type CreateSession struct {
-	OwnerID player.PlayerID `json:"owner_id"`
+	OwnerID utils.ID `json:"owner_id"`
 }
 
 func (e *CreateSession) unmarshal(payload map[string]interface{}) error{
@@ -68,8 +65,8 @@ func (e *CreateSession) unmarshal(payload map[string]interface{}) error{
 
 // DeleteSession event.
 type DeleteSession struct {
-	OwnerID player.PlayerID `json:"owner_id"`
-	SessionID  string `json:"session_id"`
+	OwnerID utils.ID `json:"owner_id"`
+	SessionID  utils.ID `json:"session_id"`
 }
 
 func (e *DeleteSession) unmarshal(payload map[string]interface{}) error{
@@ -89,8 +86,8 @@ func (e *DeleteSession) unmarshal(payload map[string]interface{}) error{
 
 // JoinSession event.
 type JoinSession struct {
-	GuestID player.PlayerID `json:"guest_id"`
-	SessionID  string `json:"session_id"`
+	GuestID utils.ID `json:"guest_id"`
+	SessionID  utils.ID `json:"session_id"`
 }
 
 func (e *JoinSession) unmarshal(payload map[string]interface{}) error{
@@ -110,8 +107,8 @@ func (e *JoinSession) unmarshal(payload map[string]interface{}) error{
 
 // ExitSession event.
 type ExitSession struct {
-	GuestID player.PlayerID `json:"guest_id"`
-	SessionID  string `json:"session_id"`
+	GuestID utils.ID `json:"guest_id"`
+	SessionID  utils.ID `json:"session_id"`
 }
 
 func (e *ExitSession) unmarshal(payload map[string]interface{}) error{
@@ -131,8 +128,8 @@ func (e *ExitSession) unmarshal(payload map[string]interface{}) error{
 
 // StartMatch event.
 type StartMatch struct {
-	OwnerID player.PlayerID `json:"owner_id"`
-	SessionID  string `json:"session_id"`
+	OwnerID utils.ID `json:"owner_id"`
+	SessionID  utils.ID `json:"session_id"`
 }
 
 func (e *StartMatch) unmarshal(payload map[string]interface{}) error{
@@ -152,9 +149,9 @@ func (e *StartMatch) unmarshal(payload map[string]interface{}) error{
 
 // PlaceShip event.
 type PlaceShip struct {
-	PlayerID player.PlayerID `json:"player_id"`
-	SessionID  string `json:"session_id"`
-	ShipID ship.ShipID `json:"ship_id"`
+	PlayerID utils.ID `json:"player_id"`
+	SessionID  utils.ID `json:"session_id"`
+	ShipID 	utils.ID `json:"ship_id"`
 	Position utils.Position `json:"position"`
 }
 
@@ -176,7 +173,7 @@ func (e *PlaceShip) unmarshal(payload map[string]interface{}) error{
 	}
 
 	e.PlayerID	= payload["player_id"].(string)
-	e.ShipID	= int(payload["ship_id"].(float64))
+	e.ShipID	= payload["ship_id"].(string)
 	e.SessionID	= payload["session_id"].(string)
 	e.Position	= payload["position"].(utils.Position)
 
@@ -185,8 +182,8 @@ func (e *PlaceShip) unmarshal(payload map[string]interface{}) error{
 
 // PlayerReady event.
 type PlayerReady struct {
-	PlayerID player.PlayerID `json:"player_id"`
-	SessionID  string `json:"session_id"`
+	PlayerID utils.ID `json:"player_id"`
+	SessionID  utils.ID `json:"session_id"`
 }
 
 func (e *PlayerReady) unmarshal(payload map[string]interface{}) error{
@@ -206,8 +203,8 @@ func (e *PlayerReady) unmarshal(payload map[string]interface{}) error{
 
 // PlayerShoot event.
 type PlayerShoot struct {
-	PlayerID	player.PlayerID		`json:"player_id"`
-	SessionID	session.SessionID	`json:"session_id"`
+	PlayerID	utils.ID		`json:"player_id"`
+	SessionID	utils.ID	`json:"session_id"`
 	Coords		utils.PosXY			`json:"coords"`
 }
 
