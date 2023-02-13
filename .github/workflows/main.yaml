@@ -34,22 +34,23 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: greedhub/battleship-frontend:latest
+          tags: ghcr.io/greedhub/battleship-frontend:latest
           context: "{{defaultContext}}:frontend"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         id: install
-        with:
-          version: 3.1.3
       - name: "Apply Kubeconfig"
-        run: mkdir -p $HOME/.kube && echo ${{ secrets.KUBECONFIG }} | base64 -d > $HOME/.kube/config
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: "Deploy with Helm"
         run: |
           cd ./frontend/helm-chart && \
           export TIMESTAMP=$(date +%s) && \
-          helm upgrade -i --force battleship-frontend -f values.yaml \
+          helm upgrade -i --force -n default battleship-frontend -f values.yaml \
           --set-string timestamp=$TIMESTAMP \
           ./
 
@@ -81,21 +82,23 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: greedhub/battleship-gateway:latest
+          platforms: linux/amd64,linux/arm64
+          tags: ghcr.io/greedhub/battleship-gateway:latest
           context: "{{defaultContext}}:/backend/gateway"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Install Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         id: install
-        with:
-          version: 3.1.3
       - name: "Apply Kubeconfig"
-        run: mkdir -p $HOME/.kube && echo ${{ secrets.KUBECONFIG }} | base64 -d > $HOME/.kube/config
+        uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: "Deploy with Helm"
         run: |
           cd ./backend/gateway/helm-chart && \
           export TIMESTAMP=$(date +%s) && \
-          helm upgrade -i --force battleship-gateway -f values.yaml \
+          helm upgrade -i --force -n default battleship-gateway -f values.yaml \
           --set-string timestamp=$TIMESTAMP \
           ./

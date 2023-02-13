@@ -7,5 +7,10 @@
   "editor.formatOnPaste": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "deno.enable": true,
+  "deno.enablePaths": ["../backend/**"]
 }

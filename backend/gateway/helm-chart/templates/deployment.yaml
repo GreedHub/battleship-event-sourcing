@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.name}}
   labels:
     app: {{ .Values.name}}
+  namespace: {{ .Values.namespace}}
 spec:
   replicas: {{ .Values.replicaCount}}
   selector:
@@ -49,9 +50,9 @@ spec:
         - name: "APP_NAME"
           value: {{ .Values.name}}
         - name: "HTTP_PORT"
-          value: {{ .Values.http.port}}
+          value: "{{ .Values.http.exposedPort}}"
         - name: "WS_PORT"
-          value: {{ .Values.webSockets.port}}
+          value: "{{ .Values.webSockets.exposedPort}}"
         - name: NODE_NAME
           valueFrom:
             fieldRef:
@@ -64,10 +65,11 @@ spec:
           
 ---
 
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: {{ .Values.name}}
+  namespace: {{ .Values.namespace}}
 spec:
   minAvailable: {{ .Values.replicaCount}}
   selector:
@@ -80,6 +82,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ .Values.name}}
+  namespace: {{ .Values.namespace}}
 spec:
   type: NodePort
   selector:
@@ -99,16 +102,15 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: {{ .Values.name}}
-  namespace: default
+  namespace: {{ .Values.namespace}}
 spec:
   entryPoints:
     - websecure
   routes:
-  - match: Host(`{{ .Values.webSockets.host}}`) && PathPrefix(`/`)
+  - match: Host(`{{ .Values.webSockets.host}}`)
     kind: Rule
     services:
-    - name: {{ .Values.name}}-s
+    - name: {{ .Values.name}}
       port: {{ .Values.webSockets.exposedPort}}
   tls:
-    certResolver: default
-    options: {}
+    secretName: {{ .Values.ingress.tls.SecretName}}

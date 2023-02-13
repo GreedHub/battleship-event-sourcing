@@ -35,13 +35,13 @@ func (s *Session) On(event SessionEvent, new bool) {
 }
 
 func (s *Session) onSessionCreated(e *SessionCreated) {
-	s.id = s.createSessionId()
-	s.owner = e.Owner
+	s.id = e.SessionID
+	s.ownerID = e.OwnerID
 	s.status = WAITING_FOR_GUEST
 }
 
 func (s *Session) onGuestConnected(e *GuestConnected) {
-	s.guest = e.Guest
+	s.guestID = e.GuestID
 	s.status = WAITING_TO_START
 }
 
@@ -53,7 +53,7 @@ func (s *Session) onMatchStarted(e *MatchStarted) {
 func (s *Session) onGuestReady(e *GuestReady) {
 	s.playersReady++
 
-	if s.playersReady == 2 {
+	if s.BothPlayersReady() {
 		s.status = IN_GAME
 		return
 	}
@@ -64,7 +64,7 @@ func (s *Session) onGuestReady(e *GuestReady) {
 func (s *Session) onOwnerReady(e *OwnerReady) {
 	s.playersReady++
 
-	if s.playersReady == 2 {
+	if s.BothPlayersReady() {
 		s.status = IN_GAME
 		return
 	}

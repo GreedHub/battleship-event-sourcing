@@ -8,7 +8,6 @@ require (
 )
 
 require (
-	github.com/GreedHub/battleship-event-sourcing/backend/services/commons v0.0.0-20230107182747-cb5e3549f1c2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -26,6 +25,5 @@ require (
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
-	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.8.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

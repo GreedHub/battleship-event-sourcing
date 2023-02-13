@@ -1,0 +1,32 @@
+@mixin lines($size) {
+  border-right: 1px solid grey;
+  border-bottom: 1px solid grey;
+  background-size: calc($size / 10) calc($size / 10);
+  background-image: linear-gradient(to right, grey 1px, transparent 1px),
+    linear-gradient(to bottom, grey 1px, transparent 1px);
+}
+
+@mixin grid($size) {
+  width: $size;
+  height: $size;
+  display: grid;
+  grid-template-columns: repeat(11, calc(720px / 11));
+  grid-template-rows: repeat(11, calc(720px / 11));
+}
+
+@mixin board($size) {
+  @include grid($size);
+  @include lines($size);
+}
+
+.board {
+  @include board(500px);
+  margin: 50px;
+
+  /*   &.bottom {
+    transform: skew(10deg);
+  }
+  &.top {
+    transform: skew(-0deg);
+  } */
+}
