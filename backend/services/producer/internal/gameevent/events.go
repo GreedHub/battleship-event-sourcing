@@ -39,7 +39,7 @@ type CreatePlayer struct {
 func (e *CreatePlayer) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"name"}
 
-	err := utils.ValidateRequestParams("CreatePlayer", requiredParams, payload)
+	err := utils.ValidateRequestParams(CREATE_PLAYER_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ type CreateSession struct {
 func (e *CreateSession) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"owner_id"}
 
-	err := utils.ValidateRequestParams("CreateSession", requiredParams, payload)
+	err := utils.ValidateRequestParams(CREATE_SESSION_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ type DeleteSession struct {
 func (e *DeleteSession) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"session_id", "owner_id"}
 
-	err := utils.ValidateRequestParams("DeleteSession", requiredParams, payload)
+	err := utils.ValidateRequestParams(DELETE_SESSION_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -99,7 +99,7 @@ type JoinSession struct {
 func (e *JoinSession) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"session_id", "guest_id"}
 
-	err := utils.ValidateRequestParams("JoinSession", requiredParams, payload)
+	err := utils.ValidateRequestParams(JOIN_SESSION_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -120,7 +120,7 @@ type ExitSession struct {
 func (e *ExitSession) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"session_id", "guest_id"}
 
-	err := utils.ValidateRequestParams("ExitSession", requiredParams, payload)
+	err := utils.ValidateRequestParams(EXIT_SESSION_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -141,7 +141,7 @@ type StartMatch struct {
 func (e *StartMatch) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"session_id", "owner_id"}
 
-	err := utils.ValidateRequestParams("StartMatch", requiredParams, payload)
+	err := utils.ValidateRequestParams(START_MATCH_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -164,7 +164,7 @@ type PlaceShip struct {
 func (e *PlaceShip) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"session_id", "player_id", "ship_id", "position"}
 
-	err := utils.ValidateRequestParams("PlaceShip", requiredParams, payload)
+	err := utils.ValidateRequestParams(PLACE_SHIP_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -188,7 +188,7 @@ func (e *PlayerReady) unmarshal(payload map[string]interface{}) error {
 
 	requiredParams := []string{"session_id", "player_id"}
 
-	err := utils.ValidateRequestParams("PlayerReady", requiredParams, payload)
+	err := utils.ValidateRequestParams(PLAYER_READY_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
@@ -210,7 +210,7 @@ type PlayerShoot struct {
 func (e *PlayerShoot) unmarshal(payload map[string]interface{}) error {
 	requiredParams := []string{"session_id", "player_id", "coords"}
 
-	err := utils.ValidateRequestParams("PlayerShoot", requiredParams, payload)
+	err := utils.ValidateRequestParams(PLAYER_SHOOT_EVENT, requiredParams, payload)
 
 	if err != nil {
 		return err
