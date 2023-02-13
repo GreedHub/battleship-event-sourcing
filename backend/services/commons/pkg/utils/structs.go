@@ -18,10 +18,10 @@ func EventName(e interface{}) string{
 	return StructName(e)
 }
 
-func ValidateRequestParams(eventName string, requiredParams []string, body map[string]interface{}) error{
+func ValidateRequestParams(method string, requiredParams []string, body map[string]interface{}) error{
 	for _, s := range requiredParams{
 		if body[s] == nil {
-			return errors.New(fmt.Sprintf("Error invoking envent %s: Parameter '%s' missing",eventName,s))
+			return errors.New(fmt.Sprintf("Error invoking %s, parameter '%s' missing", method, s))
 		}
 	}
 	

@@ -30,7 +30,7 @@ func New(ownerID utils.ID, sessionID utils.ID) *Session {
 }
 
 func CreateSessionId() utils.ID {
-	DEFAULT_SESSION_ID_LENGTH := 4
+	DEFAULT_SESSION_ID_LENGTH := 5
 
 	sessionIdLengthEnv := os.Getenv("SESSION_ID_LENGTH")
 	sessionIdLength, err := strconv.Atoi(sessionIdLengthEnv)
