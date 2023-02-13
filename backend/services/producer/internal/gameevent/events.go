@@ -1,8 +1,6 @@
 package gameevent
 
 import (
-	"errors"
-
 	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 )
 
@@ -39,8 +37,12 @@ type CreatePlayer struct {
 }
 
 func (e *CreatePlayer) unmarshal(payload map[string]interface{}) error {
-	if payload["name"] == nil {
-		return errors.New("Error invoking envent CreatePlayer: Parameter 'name' missing")
+	requiredParams := []string{"name"}
+
+	err := utils.ValidateRequestParams("CreatePlayer", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.Name = payload["name"].(string)
@@ -54,8 +56,12 @@ type CreateSession struct {
 }
 
 func (e *CreateSession) unmarshal(payload map[string]interface{}) error {
-	if payload["owner_id"] == nil {
-		return errors.New("Error invoking envent CreateSession: Parameter 'owner_id' missing")
+	requiredParams := []string{"owner_id"}
+
+	err := utils.ValidateRequestParams("CreateSession", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.OwnerID = payload["owner_id"].(string)
@@ -70,12 +76,12 @@ type DeleteSession struct {
 }
 
 func (e *DeleteSession) unmarshal(payload map[string]interface{}) error {
-	if payload["owner_id"] == nil {
-		return errors.New("Error invoking envent DeleteSession: Parameter 'owner_id' missing")
-	}
+	requiredParams := []string{"session_id", "owner_id"}
 
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent DeleteSession: Parameter 'session_id' missing")
+	err := utils.ValidateRequestParams("DeleteSession", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.OwnerID = payload["owner_id"].(string)
@@ -91,12 +97,12 @@ type JoinSession struct {
 }
 
 func (e *JoinSession) unmarshal(payload map[string]interface{}) error {
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent JoinSession: Parameter 'session_id' missing")
-	}
+	requiredParams := []string{"session_id", "guest_id"}
 
-	if payload["guest_id"] == nil {
-		return errors.New("Error invoking envent JoinSession: Parameter 'guest_id' missing")
+	err := utils.ValidateRequestParams("JoinSession", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.GuestID = payload["guest_id"].(string)
@@ -112,12 +118,12 @@ type ExitSession struct {
 }
 
 func (e *ExitSession) unmarshal(payload map[string]interface{}) error {
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent ExitSession: Parameter 'session_id' missing")
-	}
+	requiredParams := []string{"session_id", "guest_id"}
 
-	if payload["guest_id"] == nil {
-		return errors.New("Error invoking envent ExitSession: Parameter 'guest_id' missing")
+	err := utils.ValidateRequestParams("ExitSession", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.GuestID = payload["guest_id"].(string)
@@ -133,12 +139,12 @@ type StartMatch struct {
 }
 
 func (e *StartMatch) unmarshal(payload map[string]interface{}) error {
-	if payload["owner_id"] == nil {
-		return errors.New("Error invoking envent StartMatch: Parameter 'owner_id' missing")
-	}
+	requiredParams := []string{"session_id", "owner_id"}
 
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent StartMatch: Parameter 'session_id' missing")
+	err := utils.ValidateRequestParams("StartMatch", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.OwnerID = payload["owner_id"].(string)
@@ -156,20 +162,12 @@ type PlaceShip struct {
 }
 
 func (e *PlaceShip) unmarshal(payload map[string]interface{}) error {
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent PlaceShip: Parameter 'session_id' missing")
-	}
+	requiredParams := []string{"session_id", "player_id", "ship_id", "position"}
 
-	if payload["player_id"] == nil {
-		return errors.New("Error invoking envent PlaceShip: Parameter 'player_id' missing")
-	}
+	err := utils.ValidateRequestParams("PlaceShip", requiredParams, payload)
 
-	if payload["ship_id"] == nil {
-		return errors.New("Error invoking envent PlaceShip: Parameter 'ship_id' missing")
-	}
-
-	if payload["position"] == nil {
-		return errors.New("Error invoking envent PlaceShip: Parameter 'position' missing")
+	if err != nil {
+		return err
 	}
 
 	e.PlayerID = payload["player_id"].(string)
@@ -187,12 +185,13 @@ type PlayerReady struct {
 }
 
 func (e *PlayerReady) unmarshal(payload map[string]interface{}) error {
-	if payload["player_id"] == nil {
-		return errors.New("Error invoking envent PlayerReady: Parameter 'player_id' missing")
-	}
 
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent PlayerReady: Parameter 'session_id' missing")
+	requiredParams := []string{"session_id", "player_id"}
+
+	err := utils.ValidateRequestParams("PlayerReady", requiredParams, payload)
+
+	if err != nil {
+		return err
 	}
 
 	e.PlayerID = payload["player_id"].(string)
@@ -209,16 +208,12 @@ type PlayerShoot struct {
 }
 
 func (e *PlayerShoot) unmarshal(payload map[string]interface{}) error {
-	if payload["player_id"] == nil {
-		return errors.New("Error invoking envent PlayerShoot: Parameter 'player_id' missing")
-	}
+	requiredParams := []string{"session_id", "player_id", "coords"}
 
-	if payload["session_id"] == nil {
-		return errors.New("Error invoking envent PlayerShoot: Parameter 'session_id' missing")
-	}
+	err := utils.ValidateRequestParams("PlayerShoot", requiredParams, payload)
 
-	if payload["coords"] == nil {
-		return errors.New("Error invoking envent PlayerShoot: Parameter 'coords' missing")
+	if err != nil {
+		return err
 	}
 
 	e.PlayerID = payload["player_id"].(string)
