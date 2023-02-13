@@ -42,7 +42,7 @@ func CreateSessionId() SessionID {
 		sessionIdLength = DEFAULT_SESSION_ID_LENGTH
 	}
 
-	if sessionIdLength < 4 {
+	if sessionIdLength < DEFAULT_SESSION_ID_LENGTH {
 		sessionIdLength = DEFAULT_SESSION_ID_LENGTH
 	}
 

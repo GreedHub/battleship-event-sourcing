@@ -4,6 +4,17 @@ GET http://127.0.0.1:8080/ping
 ### ReadStore
 GET http://127.0.0.1:8080/read
 
+### CreatePlayer
+POST http://127.0.0.1:8080/produce
+Content-Type: application/json
+
+{
+    "type": "CreatePlayer",
+    "payload":{
+        "name": "pepe"
+    }
+}
+
 ### CreateSession
 POST http://127.0.0.1:8080/produce
 Content-Type: application/json
@@ -11,7 +22,7 @@ Content-Type: application/json
 {
     "type": "CreateSession",
     "payload":{
-        "owner_id": 1234
+        "owner_id": "mjmdDjLaCYebQhljZYOzlUyNmDyOwvPYbpqQfLrcxEPwwFjfSd"
     }
 }
 
@@ -22,7 +33,7 @@ Content-Type: application/json
 {
     "type": "DeleteSession",
     "payload":{
-        "owner_id": 1234,
-        "session_id": "LQLP"
+        "owner_id": "mjmdDjLaCYebQhljZYOzlUyNmDyOwvPYbpqQfLrcxEPwwFjfSd",
+        "session_id": "MWXN"
     }
 }

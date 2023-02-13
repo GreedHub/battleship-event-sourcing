@@ -22,18 +22,18 @@ type EventProduction struct{
 	Id			eventID				`json:"id"`
 	Timestamp	time.Time			`json:"timestamp"`
 	EventType	string				`json:"type"`
-	SessionId	session.SessionID	`json:"session_id"`
+	EntityID	utils.ID			`json:"entity_id"`
 	Payload		interface{}			`json:"payload"`
 }
 
 type eventID = string
 
-func newEventProduction(eventType string, sessionId string, event interface{}) *EventProduction{
+func newEventProduction(eventType string, entityID utils.ID, event interface{}) *EventProduction{
 	production := &EventProduction{
 			Id: utils.GetRandomString(50), // Fixme: this can produce duplicates
 			Timestamp: time.Now(),
 			EventType: eventType,
-			SessionId: sessionId,
+			EntityID: entityID,
 			Payload: event,
 		}
 	return production
@@ -43,7 +43,17 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 	var ev EventRequest
 	c.BindJSON(&ev)
 	switch  ev.EventType{
-	case "CreateSession":
+	case CREATE_PLAYER_EVENT:
+		e := &CreatePlayer{}
+		err := e.unmarshal(ev.Payload)
+
+		if err != nil{
+			return 400, nil, err
+		}
+
+		status, body, err = onCreatePlayerEvent(e)
+		
+	case CREATE_SESSION_EVENT:
 		e := &CreateSession{}
 		err := e.unmarshal(ev.Payload)
 
@@ -53,7 +63,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 
 		status, body, err = onCreateSessionEvent(e)
 
-	case "DeleteSession":
+	case DELETE_SESSION_EVENT:
 
 		e := &DeleteSession{}
 		err := e.unmarshal(ev.Payload)
@@ -64,7 +74,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 
 		status, body, err = onDeleteSessionEvent(e)
 
-	case "JoinSession":
+	case JOIN_SESSION_EVENT:
 		e := &JoinSession{}
 		err := e.unmarshal(ev.Payload)
 
@@ -74,7 +84,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 
 		status, body, err = onJoinSessionEvent(e)
 
-	case "ExitSession":
+	case EXIT_SESSION_EVENT:
 		e := &ExitSession{}
 		err := e.unmarshal(ev.Payload)
 
@@ -84,7 +94,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 
 		status, body, err = onExitSessionEvent(e)
 
-	case "StartMatch":
+	case START_MATCH_EVENT:
 		e := &StartMatch{}
 		err := e.unmarshal(ev.Payload)
 
@@ -94,7 +104,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 
 		status, body, err = onStartMatchEvent(e)
 
-	case "PlaceShip":
+	case PLACE_SHIP_EVENT:
 		e := &PlaceShip{}
 		err := e.unmarshal(ev.Payload)
 
@@ -104,7 +114,7 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 
 		status, body, err = onPlaceShipEvent(e)
 
-	case "PlayerReady":
+	case PLAYER_READY_EVENT:
 		e := &PlayerReady{}
 		err := e.unmarshal(ev.Payload)
 
@@ -115,11 +125,11 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		status, body, err = onPlayerReadyEvent(e)
 
 		status, body, err = onPlayerReadyEvent(&PlayerReady{
-			PlayerID: int(ev.Payload["player_id"].(float64)),
+			PlayerID: ev.Payload["player_id"].(string),
 			SessionID: ev.Payload["session_id"].(string),
 		})
 
-	case "PlayerShoot":
+	case PLAYER_SHOOT_EVENT:
 		e := &PlayerShoot{}
 		err := e.unmarshal(ev.Payload)
 
@@ -133,6 +143,29 @@ func HandleGameEvent (c *gin.Context)  (status int, body map[string]interface{},
 		return 400, nil, errors.New(fmt.Sprintf(`Invalid event "%s"`,ev.EventType)) 
 	}
 
+	return status, body, err
+}
+
+func onCreatePlayerEvent(e *CreatePlayer) (status int, body map[string]interface{}, err error){
+	status = 201
+
+	playerID  := player.CreatePlayerId()
+	body = make(map[string]interface{})
+	body["player_id"] = playerID
+
+	event := &player.PlayerCreated{
+		Name: e.Name,
+		PlayerID: playerID,
+	}
+	
+	production := newEventProduction("PlayerCreated",playerID,event)
+
+	err = kafka.Produce(domain.PLAYER,production)
+
+	if err != nil { 
+		return 500, nil, err
+	}
+	
 	return status, body, err
 }
 
@@ -224,6 +257,7 @@ func onStartMatchEvent(e *StartMatch)(status int, body map[string]interface{}, e
 	
 	return status, body, err
 }
+
 func onPlaceShipEvent(e *PlaceShip)(status int, body map[string]interface{}, err error){
 	status = 202
 
