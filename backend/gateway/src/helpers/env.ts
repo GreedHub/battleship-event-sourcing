@@ -1,6 +1,6 @@
-import { config } from "../../deps.ts";
+import { load } from "../../deps.ts";
 
-const configData = await config();
+const configData = await load();
 
 export const GetWsPort = (): number => {
   const DEFAULT_PORT = 8000;
