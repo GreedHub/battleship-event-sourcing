@@ -5,7 +5,7 @@
 replicaCount: 1
 
 name: "battleship-gw"
-namespace: "default"
+namespace: "battleship"
 
 webSockets:
   exposedPort: "8000"
