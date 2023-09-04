@@ -6,7 +6,7 @@ export function handleConnected() {
   console.log("Connected to client ...");
 }
 
-export function handleMessage(ws: WebSocket, data: string) {
+export function handleMessage(_ws: WebSocket, data: string) {
   let msg;
   try {
     msg = JSON.parse(data);

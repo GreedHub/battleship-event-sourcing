@@ -1,3 +1,5 @@
+[![ci](https://github.com/GreedHub/battleship-event-sourcing/actions/workflows/main.yaml/badge.svg)](https://github.com/GreedHub/battleship-event-sourcing/actions/workflows/main.yaml)
+
 ### Force ssh github use in `~/.gitconfig`
 ```sh
 [url "ssh://git@github.com/"]

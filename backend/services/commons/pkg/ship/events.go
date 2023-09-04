@@ -1,6 +1,6 @@
 package ship
 
-import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/utils"
+import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 
 // ShipEvent is a domain event marker.
 type ShipEvent interface {
@@ -13,18 +13,18 @@ func (e ShipHit) isShipEvent()        {}
 
 // ShipCreated event.
 type ShipCreated struct {
-	ID   int `json:"id"`
+	ID   utils.ID `json:"id"`
 	Size int `json:"size"`
 }
 
 // ShipPositioned event.
 type ShipPositioned struct {
-	ID       int            `json:"id"`
+	ID       utils.ID            `json:"id"`
 	Position utils.Position `json:"position"`
 }
 
 // ShipHit event.
 type ShipHit struct {
-	ID        int         `json:"id"`
+	ID        utils.ID         `json:"id"`
 	HitCoords utils.PosXY `json:"coords"`
 }

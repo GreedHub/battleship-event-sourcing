@@ -4,14 +4,13 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/player"
-	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/utils"
+	"github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 )
 
 type Session struct {
-	id           SessionID
-	owner        player.PlayerID
-	guest        player.PlayerID
+	id           utils.ID
+	ownerID        utils.ID
+	guestID        utils.ID
 	status       string
 	playersReady int
 
@@ -19,20 +18,19 @@ type Session struct {
 	version int
 }
 
-type SessionID = string
-
-func New(owner player.PlayerID) *Session {
+func New(ownerID utils.ID, sessionID utils.ID) *Session {
 	s := &Session{}
 
 	s.raise(&SessionCreated{
-		Owner: owner,
+		OwnerID: ownerID,
+		SessionID: sessionID,
 	})
 
 	return s
 }
 
-func (s *Session) createSessionId() SessionID {
-	DEFAULT_SESSION_ID_LENGTH := 4
+func CreateSessionId() utils.ID {
+	DEFAULT_SESSION_ID_LENGTH := 5
 
 	sessionIdLengthEnv := os.Getenv("SESSION_ID_LENGTH")
 	sessionIdLength, err := strconv.Atoi(sessionIdLengthEnv)
@@ -41,11 +39,15 @@ func (s *Session) createSessionId() SessionID {
 		sessionIdLength = DEFAULT_SESSION_ID_LENGTH
 	}
 
-	if sessionIdLength < 4 {
+	if sessionIdLength < DEFAULT_SESSION_ID_LENGTH {
 		sessionIdLength = DEFAULT_SESSION_ID_LENGTH
 	}
 
 	return utils.GetRandomCapitalizedString(sessionIdLength)
+}
+
+func (s *Session) GetOwnerID() utils.ID {
+	return s.ownerID
 }
 
 func (s *Session) Events() []SessionEvent {
@@ -54,4 +56,8 @@ func (s *Session) Events() []SessionEvent {
 
 func (s *Session) Version() int {
 	return s.version
+}
+
+func (s *Session) BothPlayersReady() bool {
+	return s.playersReady == 2
 }

@@ -1,4 +1,4 @@
-export default function handle(event) {
+export default function handle(event: any) {
   switch (event.type) {
     case "":
       break;

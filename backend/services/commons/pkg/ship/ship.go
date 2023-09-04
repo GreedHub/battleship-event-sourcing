@@ -1,9 +1,9 @@
 package ship
 
-import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/src/utils"
+import "github.com/GreedHub/battleship-event-sourcing/backend/services/commons/pkg/utils"
 
 type Ship struct {
-	id       int
+	id       utils.ID
 	name     string
 	size     int
 	position utils.Position
@@ -13,7 +13,7 @@ type Ship struct {
 	version int
 }
 
-func New(id int, size int) *Ship {
+func New(id utils.ID, size int) *Ship {
 	s := &Ship{}
 
 	s.raise(&ShipCreated{
